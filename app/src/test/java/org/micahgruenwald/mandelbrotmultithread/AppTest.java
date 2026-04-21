@@ -14,13 +14,19 @@ class AppTest {
   }
 
   public static void testSingleMandelbrot() {
-    BufferedImage image = new BufferedImage(250, 500, BufferedImage.TYPE_INT_RGB);
+    BufferedImage image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
     MandelbrotThread mandelbrot1 =
-        new MandelbrotThread(-2.0, -1.25, .5, 1.25, 0.01, 0.01, 0, 0, image);
+        new MandelbrotThread(-2.0, -1.25, -0.75, 0.0, 0.005, 0.005, 0, 0, image);
     MandelbrotThread mandelbrot2 =
-        new MandelbrotThread(-2.0, -1.25, .5, 1.25, 0.01, 0.01, 0, 250, image);
+        new MandelbrotThread(-2.0, 0, -0.75, 1.25, 0.005, 0.005, 0, 250, image);
+    MandelbrotThread mandelbrot3 =
+        new MandelbrotThread(-0.75, -1.25, .5, 0.0, 0.005, 0.005, 250, 0, image);
+    MandelbrotThread mandelbrot4 =
+        new MandelbrotThread(-0.75, 0.0, 0.5, 1.25, 0.005, 0.005, 250, 250, image);
     mandelbrot1.start();
     mandelbrot2.start();
+    mandelbrot3.start();
+    mandelbrot4.start();
 
     try {
       File outputfile =

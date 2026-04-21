@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 class AppTest {
   public static void main(String[] args) {
-    testSingleMandelbrot();
+    // testSingleMandelbrot();
     testManager();
   }
 
@@ -42,8 +42,15 @@ class AppTest {
   public static void testManager(){
     long ti = System.nanoTime();
     BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-    Manager manager = new Manager(1, new RenderArea(-0.75, 0, 2.5,2.5), image);
+    Manager manager = new Manager(10, new RenderArea(-0.75, 0, 2.5,2.5), image);
     manager.run();
     System.out.println("Runtime: " + (System.nanoTime() - ti) * 1e-9);
+        try {
+      File outputfile =
+          new File(
+              "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png");
+      ImageIO.write(image, "png", outputfile);
+    } catch (IOException e) {
+    }
   }
 }

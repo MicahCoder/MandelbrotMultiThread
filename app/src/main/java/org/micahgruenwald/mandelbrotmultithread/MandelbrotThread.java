@@ -56,7 +56,7 @@ public class MandelbrotThread extends Thread {
       j = j0;
       for (double y = y0; y < y1; y += dy) {
         // image.setRGB(i, j, ((gray << 16) | (gray << 8) | gray));
-        image.setRGB(i, j, Calculator.COLOR_CALC.calcColor(Calculator.mandelbrotValue(x, y)));
+        image.setRGB(i, j, Calculator.getColorCalc().calcColor(Calculator.mandelbrotValue(x, y)));
         j++;
       }
       i++;

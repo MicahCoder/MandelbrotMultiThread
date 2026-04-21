@@ -1,13 +1,11 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
 import java.awt.Color;
-import java.util.Random;
 
-import org.micahgruenwald.mandelbrotmultithread.Calculator.ColorMode;
 
 public class Calculator {
   private static int maxIterations = 100;
-  public static final ColorMode COLOR_CALC= ColorMode.HSV_WITH_BLACK;
+  private static ColorMode COLOR_CALC= ColorMode.BLACK_AND_WHITE;
 
   public static double mandelbrotValue(double x, double y) {
     double x2 = 0.0;
@@ -32,19 +30,16 @@ public class Calculator {
     maxIterations = maxIts;
   }
 
-  private Color HSV(float lightness) {
-    return new Color(Color.HSBtoRGB(lightness * 10, 1, .9f));
+  public static int getMaxIterations(){
+    return maxIterations;
   }
 
-  private Color HSVWithBlack(float lightness) {
-    if (lightness == 1) {
-      return new Color(0, 0, 0);
-    }
-    return new Color(Color.HSBtoRGB(lightness * 10, 1, .9f));
+  public static void setColorMode(ColorMode colorMode){
+    COLOR_CALC = colorMode;
   }
 
-  private Color simpleGradient(float r, float g, float b, float lightness) {
-    return new Color(r * lightness / 255, g * lightness / 255, b * lightness / 255);
+  public static ColorMode getColorCalc(){
+    return COLOR_CALC;
   }
 
   private Color complexGradient(Color[] colors, float[] positions, float position) {
@@ -66,45 +61,5 @@ public class Calculator {
     float b = (start.getBlue() * startWeight + end.getBlue() * endWeight) / 255f;
     float a = (start.getAlpha() * startWeight + end.getAlpha() * endWeight) / 255f;
     return new Color(r, g, b, a);
-  }
-
-  private Color randomColor(float seed) {
-    Random random = new Random((long) seed);
-    if (seed == maxIterations) {
-      return new Color(0, 0, 0);
-    }
-    return new Color(Color.HSBtoRGB(360 * random.nextFloat(), 1f, random.nextFloat()));
-  }
-
-  public interface ColorMode{
-    public abstract int calcColor(double lightness);
-
-    public static final ColorMode RANDOM = new ColorMode() {
-      @Override
-      public int calcColor(double lightness){
-        Random random = new Random((long) lightness);
-        if (lightness == maxIterations) {
-          return 0;
-        }
-        return (new Color(Color.HSBtoRGB(360 * random.nextFloat(), 1f, random.nextFloat()))).getRGB();
-      }
-    };
-
-    public static final ColorMode HSV = new ColorMode() {
-      @Override
-      public int calcColor(double lightness){
-        return  Color.HSBtoRGB((float) lightness * 10, 1, .9f);
-      }
-    };
-
-    public static final ColorMode HSV_WITH_BLACK = new ColorMode() {
-      @Override
-      public int calcColor(double lightness){
-        if (lightness == 1) {
-          return 0;
-        }
-        return  Color.HSBtoRGB((float) lightness * 10, 1, .9f);
-      }
-    };
   }
 }

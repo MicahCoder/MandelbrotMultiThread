@@ -39,15 +39,23 @@ public class MandelbrotThread extends Thread {
   public void run() {
     double dx = (x1 - x0)/(i1 - i0);
     double dy = (y1 - y0)/(j1 - j0);
+    System.out.println("Dx: " + dx);
+    System.out.println("Dy: " + dy);
     double x = x0;
     double y = y0;
+    System.out.println("x: " + x);
+    System.out.println("y: " + y);
     for (int i = i0; i < i1; i++) {
+      x=x0;
       for (int j = j0; j < j1; j++) {
         image.setRGB(i, j, Calculator.getColorCalc().calcColor(Calculator.mandelbrotValue(x, y)));
         x+= dx;
       }
       y+=dy;
+
     }
+    System.out.println("x: " + x);
+    System.out.println("y: " + y);
   }
 
   public BufferedImage getImage() {

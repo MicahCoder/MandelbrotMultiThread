@@ -17,6 +17,11 @@ import javax.imageio.ImageIO;
 
 
 
+
+
+
+
+
 class AppTest {
   public static void main(String[] args) {
     testSingleMandelbrot();
@@ -26,15 +31,19 @@ class AppTest {
   public static void testSingleMandelbrot() {
     BufferedImage image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
     MandelbrotThread mandelbrot1 =
-        new MandelbrotThread(-2.0, -1.25, -0.75, 0.0, 0, 0, 250,250, image);
+        new MandelbrotThread(-1.25, -2.0, 1.25, .5, 0, 0, 500,500, image);
     mandelbrot1.start();
 
     try {
+      mandelbrot1.join();
       File outputfile =
           new File(
               "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png");
       ImageIO.write(image, "png", outputfile);
     } catch (IOException e) {
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 

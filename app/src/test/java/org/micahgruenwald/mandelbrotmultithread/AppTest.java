@@ -41,16 +41,34 @@ class AppTest {
 
   public static void testManager(){
     long ti = System.nanoTime();
-    BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-    Manager manager = new Manager(10, new RenderArea(-0.75, 0, 2.5,2.5), image);
-    manager.run();
-    System.out.println("Runtime: " + (System.nanoTime() - ti) * 1e-9);
-        try {
+    BufferedImage image = new BufferedImage(158, 79, BufferedImage.TYPE_INT_RGB);
+    Manager manager = new Manager(19, new RenderArea(-0.75, 0, 5.0,2.5), image);
+    manager.start();
+
+    while (manager.isAlive()) { 
+      try{
+        Thread.sleep(5);
+      }catch(Exception e){}
+      try {
       File outputfile =
           new File(
               "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png");
       ImageIO.write(image, "png", outputfile);
     } catch (IOException e) {
     }
+  }
+    try {
+        manager.join();
+        System.out.println("Runtime: " + (System.nanoTime() - ti) * 1e-9);
+      File outputfile =
+          new File(
+              "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png");
+      ImageIO.write(image, "png", outputfile);
+    } catch (IOException e) {
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    System.out.println("Done!");
   }
 }

@@ -31,11 +31,12 @@ public class Manager extends Thread{
 
     @Override
     public void run(){
-        ArrayList<Integer> rowLengths = rowLengths(image.getHeight(), threadCount);
+        ArrayList<Integer> rowLengths = rowLengths(image.getWidth(), threadCount);
+        
         double x0 = area.x0();
         double y0 = area.y0();
-        double dx = area.xWidth() / image.getWidth();
-        double dy = area.xWidth() / image.getHeight();
+        double dx = area.xWidth() / (image.getWidth());
+        double dy = area.yWidth() / (image.getHeight());
         double x1;
         double y1 = area.y1();
 
@@ -50,6 +51,13 @@ public class Manager extends Thread{
         for(Thread thread:threads){
             thread.start();
         }
-
+        for(Thread thread:threads){
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ package org.micahgruenwald.mandelbrotmultithread;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 
 
@@ -24,14 +25,14 @@ import javax.imageio.ImageIO;
 
 class AppTest {
   public static void main(String[] args) {
-    testSingleMandelbrot();
-    // testManager();
+    // testSingleMandelbrot();
+    testManager();
   }
 
   public static void testSingleMandelbrot() {
-    BufferedImage image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
+    BufferedImage image = new BufferedImage(101, 101, BufferedImage.TYPE_INT_RGB);
     MandelbrotThread mandelbrot1 =
-        new MandelbrotThread(-1.25, -2.0, 1.25, .5, 0, 0, 500,500, image);
+        new MandelbrotThread(-2.0, -1.25, .5, 1.25, 50, 0, 100,100, image);
     mandelbrot1.start();
 
     try {
@@ -49,8 +50,8 @@ class AppTest {
 
   public static void testManager(){
     long ti = System.nanoTime();
-    BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-    Manager manager = new Manager(2, new RenderArea(-0.75, 0, 2.5,2.5), image);
+    BufferedImage image = new BufferedImage(101, 101, BufferedImage.TYPE_INT_RGB);
+    Manager manager = new Manager(8, new RenderArea(-0.75, 0, 2.5,2.5), image);
     manager.run();
     System.out.println("Runtime: " + (System.nanoTime() - ti) * 1e-9);
         try {

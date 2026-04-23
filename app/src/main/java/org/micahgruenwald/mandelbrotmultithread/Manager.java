@@ -36,20 +36,23 @@ public class Manager extends Thread{
         double y0 = area.y0();
         double dx = area.xWidth() / (image.getWidth());
         double dy = area.yWidth() / (image.getHeight());
-        double x1;
+        double x1 = area.x1();
         double y1 = area.y1();
 
         int row = 0;
         for(int i = 0; i<threadCount; i++){
             int length = rowLengths.get(i);
-            System.out.println("Length: "+ length);
-            System.out.println("dx: "+ dx);
-            x1 = x0 + (length)*dx;
-            System.out.println("x0 "+ x0);
-            System.out.println("x1 "+ x1);
+            y1 = y0 + (length)*dy;
+            // System.out.println("Length: "+ length);
+            // System.out.println("dx: "+ dx);
+            // System.out.println("dy: "+ dy);
+            // System.out.println("x0 "+ x0);
+            // System.out.println("x1 "+ x1);
+            // System.out.println("y0 "+ y0);
+            // System.out.println("y1 "+ y1);
             threads.add(new MandelbrotThread(x0, y0, x1, y1, row,0, row+length, image.getWidth(),image));
             row += length;
-            x0 = x1 + dx;
+            y0 = y1;
         }
         for(Thread thread:threads){
             thread.start();

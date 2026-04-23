@@ -2,7 +2,7 @@ package org.micahgruenwald.mandelbrotmultithread;
 
 
 public class Calculator {
-  private static int maxIterations = 300;
+  private static int maxIterations = 600;
   private static ColorMode COLOR_CALC= ColorMode.HSV_WITH_BLACK;
   private static double cx = -.8;
   private static double cy = .156;

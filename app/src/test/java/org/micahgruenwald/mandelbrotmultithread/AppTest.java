@@ -38,7 +38,7 @@ class AppTest {
         System.out.println("Processors: "+Runtime.getRuntime().availableProcessors());
     BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
     Calculator.setColorMode(ColorMode.ORANGE_BLACK_BLUE);
-    Manager manager = new Manager(8, new RenderArea(0,0, 3,3), image);
+    Manager manager = new Manager(8, new RenderArea(0,0, 3.5,3.5), image);
 
     manager.start();
     try {

@@ -42,12 +42,9 @@ public class Calculator {
   public static int escapeRadius(double cx,double cy, int n){
     int r = 1;
     double v =Math.sqrt(cx*cx + cy*cy);
-    System.out.println(v);
     while(Math.pow(r,n) - r < v){
-      System.out.println(Math.pow(r,n));
       r++;
     }
-    System.out.println("RFinal: " + r);
     return r;
   }
 
@@ -66,6 +63,13 @@ public class Calculator {
 
   public static ColorMode getColorCalc(){
     return COLOR_CALC;
+  }
+
+  public static void updateJuliaVals(double cx, double cy, int n){
+    Calculator.cx = cx;
+    Calculator.cy = cy;
+    Calculator.n = n;
+    Calculator.R = escapeRadius(cx, cy, n);
   }
 
   

@@ -77,5 +77,8 @@ public static double mandelbrotValue(double x, double y) {
     Calculator.R = escapeRadius(cx, cy, n);
   }
 
+  public static void setJuliaMode(boolean state){
+    Calculator.juliaMode = state;
+  }
   
 }

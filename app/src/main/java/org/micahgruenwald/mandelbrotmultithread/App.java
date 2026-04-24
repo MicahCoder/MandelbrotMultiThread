@@ -1,5 +1,6 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
+import io.qt.core.Qt;
 import io.qt.gui.QPixmap;
 import io.qt.widgets.*;
 import java.nio.file.Files;
@@ -11,34 +12,37 @@ public class App {
 
     QWidget window = new QWidget();
     window.setWindowTitle("Test Window");
-    window.resize(500, 300);
+    window.resize(900, 600);
 
     QHBoxLayout mainLayout = new QHBoxLayout(window);
     String imagePath = findImagePath();
-    QLabel imageLabel = new QLabel();
+    ZoomableCropImageView imageView = new ZoomableCropImageView();
     QPixmap pixmap = new QPixmap(imagePath);
 
     if (pixmap.isNull()) {
-      imageLabel.setText("Could not load image. Tried: " + imagePath);
+      imageView.setErrorText("Could not load image. Tried: " + imagePath);
     } else {
-      imageLabel.setPixmap(pixmap);
-      imageLabel.setScaledContents(true);
+      imageView.setImage(pixmap);
     }
-    imageLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
+    imageView.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
+    imageView.setMinimumSize(1, 1);
 
-    QVBoxLayout sidebarLayout = new QVBoxLayout();
-    sidebarLayout.addWidget(new QPushButton("Button 1"));
-    sidebarLayout.addWidget(new QPushButton("Button 2"));
-    sidebarLayout.addStretch(1);
+    SidebarPanel sidebar = new SidebarPanel(imageView);
 
-    QWidget sidebar = new QWidget();
-    sidebar.setLayout(sidebarLayout);
-    sidebar.setMinimumWidth(160);
+    QSplitter splitter = new QSplitter();
+    splitter.setOrientation(Qt.Orientation.Horizontal);
+    splitter.addWidget(sidebar);
+    splitter.addWidget(imageView);
+    splitter.setOpaqueResize(true);
+    splitter.setChildrenCollapsible(false);
+    splitter.setHandleWidth(8);
+    splitter.setStretchFactor(0, 0);
+    splitter.setStretchFactor(1, 1);
+    splitter.setCollapsible(0, false);
+    splitter.setCollapsible(1, false);
+    splitter.setSizes(java.util.List.of(180, 320));
 
-    mainLayout.addWidget(sidebar);
-    mainLayout.addWidget(imageLabel);
-    mainLayout.setStretch(0, 0);
-    mainLayout.setStretch(1, 1);
+    mainLayout.addWidget(splitter);
 
     window.show();
 

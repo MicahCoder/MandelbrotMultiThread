@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import io.qt.core.QSize;
 import io.qt.gui.QPixmap;
 
-public class Manager extends Thread{
+public class Manager{
     private final BufferedImage image;
     private final int threadCount;
     private final ArrayList<MandelbrotThread> threads;
@@ -35,9 +35,9 @@ public class Manager extends Thread{
         return rowLengths;
     }
 
-    @Override
-    public void run(){
+    public void render(){
         ArrayList<Integer> rowLengths = rowLengths(image.getHeight(), threadCount);
+        threads.clear();
         double x0 = area.x0();
         double y0 = area.y0();
         double dx = area.xWidth() / (image.getWidth());

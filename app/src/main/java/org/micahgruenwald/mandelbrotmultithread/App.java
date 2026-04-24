@@ -1,12 +1,8 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import javax.imageio.ImageIO;
 
 import io.qt.gui.QPixmap;
 import io.qt.widgets.QApplication;
@@ -29,8 +25,6 @@ public class App {
     QHBoxLayout mainLayout = new QHBoxLayout(window);
     String imagePath = findImagePath();
     QLabel imageLabel = new QLabel();
-    long ti = System.nanoTime();
-        System.out.println("Processors: "+Runtime.getRuntime().availableProcessors());
     BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
     Calculator.setColorMode(ColorMode.ORANGE_BLACK_BLUE);
     Calculator.setJuliaValues( -0.4,  0.6, 2);
@@ -38,16 +32,7 @@ public class App {
     Calculator.setJuliaMode(true);
     Manager manager = new Manager(8, new RenderArea(0,0, 3.5,3.5), image);
 
-    manager.start();
-    try {
-      manager.join();
-      System.out.println("Runtime: " + (System.nanoTime() - ti) * 1e-9);
-      File outputFile =
-          new File(
-              "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png");
-      ImageIO.write(image, "png", outputFile);
-    } catch (IOException | InterruptedException e) {
-    }
+    manager.render();
   
     QPixmap pixmap = manager.getQPixmap();
 
@@ -76,11 +61,7 @@ public class App {
         default -> ColorMode.BLACK_AND_WHITE;
       };
       Calculator.setColorMode(mode);
-      manager.start();
-      try {
-          manager.join();
-      } catch (InterruptedException e) {
-      }
+      manager.render();
       QPixmap map = manager.getQPixmap();
         imageLabel.setPixmap(map);
         imageLabel.setScaledContents(true);

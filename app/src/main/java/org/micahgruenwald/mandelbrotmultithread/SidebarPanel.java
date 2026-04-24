@@ -2,6 +2,7 @@ package org.micahgruenwald.mandelbrotmultithread;
 
 import io.qt.gui.QPixmap;
 import io.qt.widgets.QComboBox;
+import io.qt.widgets.QDoubleSpinBox;
 import io.qt.widgets.QHBoxLayout;
 import io.qt.widgets.QLabel;
 import io.qt.widgets.QPushButton;
@@ -37,6 +38,38 @@ class SidebarPanel extends QWidget {
     iterationNumber.setRange(10, 1000);
     iterationNumber.setValue(100);
 
+    QDoubleSpinBox cx = new QDoubleSpinBox();
+    cx.setSingleStep(0.01);
+    cx.setRange(-1.0, 1.0);
+    cx.setValue(-0.4);
+
+    QDoubleSpinBox cy = new QDoubleSpinBox();
+    cy.setSingleStep(0.01);
+    cy.setRange(-1.0, 1.0);
+    cy.setValue(0.6);
+    QSpinBox n = new QSpinBox();
+    n.setSingleStep(1);
+    n.setRange(2, 5);
+    n.setValue(2);
+
+    cx.valueChanged.connect((i)->{
+      Calculator.setJuliaValues(cx.value(), cy.value(), n.value());
+      renderWindow();
+    });
+
+    cy.valueChanged.connect((i)->{
+      Calculator.setJuliaValues(cx.value(), cy.value(), n.value());
+      renderWindow();
+    });
+    n.valueChanged.connect((i)->{
+      Calculator.setJuliaValues(cx.value(), cy.value(), n.value());
+      renderWindow();
+    });
+
+    cy.setVisible(false);
+    cx.setVisible(false);
+    n.setVisible(false);
+    
     iterationNumber.valueChanged.connect((i)->{
       Calculator.setMaxIterations(i);
       renderWindow();
@@ -67,33 +100,49 @@ class SidebarPanel extends QWidget {
     QComboBox fractalType = new QComboBox();
     fractalType.addItem("Mandelbrot");
     fractalType.addItem("Julia");
-
-    colorChoices.currentIndexChanged.connect(
-        (i) -> {
-          ColorMode mode =
-              switch (i) {
-                case 0 -> ColorMode.ORANGE_BLACK_BLUE;
-                case 1 -> ColorMode.RANDOM;
-                case 2 -> ColorMode.HSV_WITH_BLACK;
-                case 3 -> ColorMode.BLACK_AND_WHITE;
-                default -> ColorMode.BLACK_AND_WHITE;
-              };
-          Calculator.setColorMode(mode);
-          renderWindow();
-        });
-
-        fractalType.currentIndexChanged.connect(
+    QHBoxLayout cxcynLabel = new QHBoxLayout();
+    cxcynLabel.setSpacing(5);
+    QLabel cxLabel = new QLabel("x");
+    QLabel cyLabel = new QLabel("yi");
+    QLabel nLabel = new QLabel("n");
+    cxcynLabel.addWidget(cxLabel);
+    cxcynLabel.addWidget(cyLabel);
+    cxcynLabel.addWidget(nLabel);
+    cyLabel.setVisible(false);
+    cxLabel.setVisible(false);
+    nLabel.setVisible(false);
+    fractalType.currentIndexChanged.connect(
         (i) -> {
           if(i == 0){
             manager.setRenderArea(new RenderArea(-0.75, 0.0, 2.5,2.5));
             Calculator.setJuliaMode(false);
+            cy.setVisible(false);
+            cx.setVisible(false);
+            n.setVisible(false);
+            cyLabel.setVisible(false);
+            cxLabel.setVisible(false);
+            nLabel.setVisible(false);
+    
           }else{
             manager.setRenderArea(new RenderArea(0.0, 0.0, 3.5,3.5));
             Calculator.setJuliaMode(true);
+            cy.setVisible(true);
+            cx.setVisible(true);
+            n.setVisible(true);
+            cyLabel.setVisible(true);
+            cxLabel.setVisible(true);
+            nLabel.setVisible(true);
           }
           renderWindow();
         });
-    
+    QHBoxLayout cxcyn = new QHBoxLayout();
+    cxcyn.setSpacing(5);
+    cxcyn.addWidget(cx);
+    cxcyn.addWidget(cy);
+    cxcyn.addWidget(n);
+   
+
+
     zoomInButton.clicked.connect(imageView::zoomIn);
     zoomOutButton.clicked.connect(imageView::zoomOut);
     resetZoomButton.clicked.connect(imageView::resetZoom);
@@ -101,6 +150,8 @@ class SidebarPanel extends QWidget {
     sidebarLayout.addWidget(colorChoices);
     sidebarLayout.addWidget(new QLabel("Fractal Type Choices"));
     sidebarLayout.addWidget(fractalType);
+    sidebarLayout.addLayout(cxcynLabel); 
+    sidebarLayout.addLayout(cxcyn); 
     sidebarLayout.addWidget(new QLabel("Max Iterations"));
     sidebarLayout.addWidget(iterationNumber);
     sidebarLayout.addStretch(1);

@@ -140,8 +140,9 @@ class SidebarPanel extends QWidget {
     cxcyn.addWidget(cx);
     cxcyn.addWidget(cy);
     cxcyn.addWidget(n);
-   
 
+    QPushButton rerenderButton = new QPushButton("Rerender Visible Area");
+    rerenderButton.clicked.connect(imageView::rerenderVisible);
 
     zoomInButton.clicked.connect(imageView::zoomIn);
     zoomOutButton.clicked.connect(imageView::zoomOut);
@@ -154,6 +155,7 @@ class SidebarPanel extends QWidget {
     sidebarLayout.addLayout(cxcyn); 
     sidebarLayout.addWidget(new QLabel("Max Iterations"));
     sidebarLayout.addWidget(iterationNumber);
+    sidebarLayout.addWidget(rerenderButton);
     sidebarLayout.addStretch(1);
 
     setLayout(sidebarLayout);

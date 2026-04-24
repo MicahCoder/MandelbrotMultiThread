@@ -29,7 +29,7 @@ public class App {
 
     manager.render();
 
-    ZoomableCropImageView imageView = new ZoomableCropImageView();
+    ZoomableCropImageView imageView = new ZoomableCropImageView(manager);
     imageView.setImage(manager.getQPixmap());
     imageView.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
     imageView.setMinimumSize(1, 1);
@@ -55,28 +55,5 @@ public class App {
 
     QApplication.exec();
     QApplication.shutdown();
-  }
-
-  private static String findImagePath() {
-    Path cwd = Path.of("").toAbsolutePath().normalize();
-
-    Path[] candidates =
-        new Path[] {
-          cwd.resolve(
-              "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png"),
-          cwd.resolve(
-              "src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png"),
-          cwd.resolve(
-              "../app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png")
-        };
-
-    for (Path candidate : candidates) {
-      Path normalized = candidate.normalize();
-      if (Files.exists(normalized)) {
-        return normalized.toString();
-      }
-    }
-
-    return candidates[0].normalize().toString();
   }
 }

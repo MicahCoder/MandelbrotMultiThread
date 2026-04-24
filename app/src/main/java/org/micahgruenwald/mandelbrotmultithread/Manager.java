@@ -72,6 +72,11 @@ public class Manager{
         }catch(InterruptedException e){};
 
     }
+
+    public RenderArea getRenderArea(){
+        return area;
+    }
+    
     public QPixmap getQPixmap() {
     // Initialize QPixmap with the correct dimensions
 

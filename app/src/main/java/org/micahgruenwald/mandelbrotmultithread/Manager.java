@@ -1,7 +1,13 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+
+import io.qt.core.QSize;
+import io.qt.gui.QPixmap;
 
 public class Manager extends Thread{
     private final BufferedImage image;
@@ -64,4 +70,21 @@ public class Manager extends Thread{
         }catch(InterruptedException e){};
 
     }
+    public QPixmap getQPixmap() {
+    // Initialize QPixmap with the correct dimensions
+
+    BufferedImage img = image;
+    QPixmap result = new QPixmap(new QSize(img.getWidth(), img.getHeight()));
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    
+    try {
+        // Write the BufferedImage to a byte array (using "png" or "jpg")
+        ImageIO.write(img, "png", baos);
+        // Load the data directly into the Qt object
+        result.loadFromData(baos.toByteArray());
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return result;
+}
 }

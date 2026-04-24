@@ -1,9 +1,22 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
-import io.qt.gui.QPixmap;
-import io.qt.widgets.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import javax.imageio.ImageIO;
+
+import io.qt.gui.QPixmap;
+import io.qt.widgets.QApplication;
+import io.qt.widgets.QComboBox;
+import io.qt.widgets.QHBoxLayout;
+import io.qt.widgets.QLabel;
+import io.qt.widgets.QPushButton;
+import io.qt.widgets.QSizePolicy;
+import io.qt.widgets.QVBoxLayout;
+import io.qt.widgets.QWidget;
 
 public class App {
   public static void main(String[] args) {
@@ -16,7 +29,27 @@ public class App {
     QHBoxLayout mainLayout = new QHBoxLayout(window);
     String imagePath = findImagePath();
     QLabel imageLabel = new QLabel();
-    QPixmap pixmap = new QPixmap(imagePath);
+    long ti = System.nanoTime();
+        System.out.println("Processors: "+Runtime.getRuntime().availableProcessors());
+    BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+    Calculator.setColorMode(ColorMode.ORANGE_BLACK_BLUE);
+    Calculator.setJuliaValues( -0.4,  0.6, 2);
+    Calculator.setMaxIterations(200);
+    Calculator.setJuliaMode(true);
+    Manager manager = new Manager(8, new RenderArea(0,0, 3.5,3.5), image);
+
+    manager.start();
+    try {
+      manager.join();
+      System.out.println("Runtime: " + (System.nanoTime() - ti) * 1e-9);
+      File outputFile =
+          new File(
+              "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png");
+      ImageIO.write(image, "png", outputFile);
+    } catch (IOException | InterruptedException e) {
+    }
+  
+    QPixmap pixmap = manager.getQPixmap();
 
     if (pixmap.isNull()) {
       imageLabel.setText("Could not load image. Tried: " + imagePath);
@@ -25,10 +58,38 @@ public class App {
       imageLabel.setScaledContents(true);
     }
     imageLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
-
+    
     QVBoxLayout sidebarLayout = new QVBoxLayout();
+
+    QComboBox colorChoices = new QComboBox();
+    colorChoices.addItem("Orange Black and Blue");
+    colorChoices.addItem("Random Colors");
+    colorChoices.addItem("Rainbow");
+    colorChoices.addItem("Black and White");
+
+    colorChoices.currentIndexChanged.connect((i)->{
+      ColorMode mode = switch(i){
+        case 0 -> ColorMode.ORANGE_BLACK_BLUE;
+        case 1 -> ColorMode.RANDOM;
+        case 2 -> ColorMode.HSV_WITH_BLACK;
+        case 3 -> ColorMode.BLACK_AND_WHITE;
+        default -> ColorMode.BLACK_AND_WHITE;
+      };
+      Calculator.setColorMode(mode);
+      manager.start();
+      try {
+          manager.join();
+      } catch (InterruptedException e) {
+      }
+      QPixmap map = manager.getQPixmap();
+        imageLabel.setPixmap(map);
+        imageLabel.setScaledContents(true);
+    });
+
     sidebarLayout.addWidget(new QPushButton("Button 1"));
     sidebarLayout.addWidget(new QPushButton("Button 2"));
+
+    sidebarLayout.addWidget(colorChoices);
     sidebarLayout.addStretch(1);
 
     QWidget sidebar = new QWidget();

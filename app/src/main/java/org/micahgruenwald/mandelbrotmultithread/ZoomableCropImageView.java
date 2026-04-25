@@ -1,6 +1,8 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
+import io.qt.core.QPoint;
 import io.qt.core.Qt;
+import io.qt.gui.QCursor;
 import io.qt.gui.QPaintEvent;
 import io.qt.gui.QPainter;
 import io.qt.gui.QPixmap;
@@ -36,15 +38,38 @@ class ZoomableCropImageView extends QWidget {
 
     void zoomIn() {
       // setZoom(zoomFactor * ZOOM_STEP);
-      double xWidth = manager.getRenderArea().xWidth();
-      double yWidth = manager.getRenderArea().yWidth();
-      double x = manager.getRenderArea().xCenter();
-      double y = manager.getRenderArea().yCenter();
+      RenderArea area = manager.getRenderArea();
+      double xWidth = area.xWidth()* ZOOM_STEP;
+      double yWidth = area.yWidth()*ZOOM_STEP;
+      QPoint mousePose = mapFromGlobal(QCursor.pos());
+      double mx = (mousePose.x()/(double)width())*area.xWidth() +area.x0() ;
+      double my = ((height() - mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
+      System.out.println("Mouse Cord (pixels): (" + mousePose.x()+ ", " + mousePose.y() + ")" );
+            System.out.println("Width/height (pixels): (" + width()+ ", " + height() + ")" );
+      System.out.println("Mouse Cord (x,y): (" + mx + ", " + my + ")" );
+      double x = mx - (mx - area.xCenter()) * ZOOM_STEP;
+      double y = my - (my - area.yCenter()) * ZOOM_STEP;
       manager.setRenderArea(new RenderArea(x,y,xWidth,yWidth));
+      manager.render();
+      setImage(manager.getQPixmap());
     }
 
     void zoomOut() {
       // setZoom(zoomFactor / ZOOM_STEP);
+      RenderArea area = manager.getRenderArea();
+      double xWidth = area.xWidth()/ ZOOM_STEP;
+      double yWidth = area.yWidth()/ZOOM_STEP;
+      QPoint mousePose = mapFromGlobal(QCursor.pos());
+      double mx = (mousePose.x()/(double)width())*area.xWidth() +area.x0() ;
+      double my = (( mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
+      System.out.println("Mouse Cord (pixels): (" + mousePose.x()+ ", " + mousePose.y() + ")" );
+            System.out.println("Width/height (pixels): (" + width()+ ", " + height() + ")" );
+      System.out.println("Mouse Cord (x,y): (" + mx + ", " + my + ")" );
+      double x = mx - (mx - area.xCenter()) / ZOOM_STEP;
+      double y = my - (my - area.yCenter()) / ZOOM_STEP;
+      manager.setRenderArea(new RenderArea(x,y,xWidth,yWidth));
+      manager.render();
+      setImage(manager.getQPixmap());
     }
 
     void resetZoom() {

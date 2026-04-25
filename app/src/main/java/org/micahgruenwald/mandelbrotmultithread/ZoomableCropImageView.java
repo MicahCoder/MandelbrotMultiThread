@@ -43,7 +43,7 @@ class ZoomableCropImageView extends QWidget {
       double yWidth = area.yWidth()*ZOOM_STEP;
       QPoint mousePose = mapFromGlobal(QCursor.pos());
       double mx = (mousePose.x()/(double)width())*area.xWidth() +area.x0() ;
-      double my = ((height() - mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
+      double my = ((mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
       System.out.println("Mouse Cord (pixels): (" + mousePose.x()+ ", " + mousePose.y() + ")" );
             System.out.println("Width/height (pixels): (" + width()+ ", " + height() + ")" );
       System.out.println("Mouse Cord (x,y): (" + mx + ", " + my + ")" );

@@ -44,9 +44,9 @@ class ZoomableCropImageView extends QWidget {
       QPoint mousePose = mapFromGlobal(QCursor.pos());
       double mx = (mousePose.x()/(double)width())*area.xWidth() +area.x0() ;
       double my = ((mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
-      System.out.println("Mouse Cord (pixels): (" + mousePose.x()+ ", " + mousePose.y() + ")" );
-            System.out.println("Width/height (pixels): (" + width()+ ", " + height() + ")" );
-      System.out.println("Mouse Cord (x,y): (" + mx + ", " + my + ")" );
+      // System.out.println("Mouse Cord (pixels): (" + mousePose.x()+ ", " + mousePose.y() + ")" );
+      //       System.out.println("Width/height (pixels): (" + width()+ ", " + height() + ")" );
+      // System.out.println("Mouse Cord (x,y): (" + mx + ", " + my + ")" );
       double x = mx - (mx - area.xCenter()) * ZOOM_STEP;
       double y = my - (my - area.yCenter()) * ZOOM_STEP;
       manager.setRenderArea(new RenderArea(x,y,xWidth,yWidth));
@@ -62,9 +62,9 @@ class ZoomableCropImageView extends QWidget {
       QPoint mousePose = mapFromGlobal(QCursor.pos());
       double mx = (mousePose.x()/(double)width())*area.xWidth() +area.x0() ;
       double my = (( mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
-      System.out.println("Mouse Cord (pixels): (" + mousePose.x()+ ", " + mousePose.y() + ")" );
-            System.out.println("Width/height (pixels): (" + width()+ ", " + height() + ")" );
-      System.out.println("Mouse Cord (x,y): (" + mx + ", " + my + ")" );
+      // System.out.println("Mouse Cord (pixels): (" + mousePose.x()+ ", " + mousePose.y() + ")" );
+      //       System.out.println("Width/height (pixels): (" + width()+ ", " + height() + ")" );
+      // System.out.println("Mouse Cord (x,y): (" + mx + ", " + my + ")" );
       double x = mx - (mx - area.xCenter()) / ZOOM_STEP;
       double y = my - (my - area.yCenter()) / ZOOM_STEP;
       manager.setRenderArea(new RenderArea(x,y,xWidth,yWidth));

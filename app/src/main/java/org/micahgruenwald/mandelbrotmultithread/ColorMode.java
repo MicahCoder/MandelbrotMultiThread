@@ -26,7 +26,7 @@ public interface ColorMode {
         if (lightness == 1) {
             return 0;
         }
-        return Color.HSBtoRGB((float) lightness * 10, 1, 1);
+        return Color.HSBtoRGB((float) lightness * 10, 1, .9f);
     };
 
     public static final ColorMode BLACK_AND_WHITE = (double lightness) -> {

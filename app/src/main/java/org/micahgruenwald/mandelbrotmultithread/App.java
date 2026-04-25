@@ -23,9 +23,9 @@ public class App {
     BufferedImage image = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
     Calculator.setColorMode(ColorMode.ORANGE_BLACK_BLUE);
     Calculator.setJuliaValues(-0.4, 0.6, 2);
-    Calculator.setMaxIterations(100);
+    Calculator.setMaxIterations(200);
     Calculator.setJuliaMode(false);
-    Manager manager = new Manager(6, new RenderArea(-0.75, 0, 2.5, 2.5), image);
+    Manager manager = new Manager(6, Calculator.DEFAULT_MANDELBROT_AREA, image);
 
     manager.render();
 

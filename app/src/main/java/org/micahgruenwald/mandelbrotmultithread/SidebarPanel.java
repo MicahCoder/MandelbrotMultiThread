@@ -36,7 +36,7 @@ class SidebarPanel extends QWidget {
     QSpinBox iterationNumber = new QSpinBox();
     iterationNumber.setSingleStep(10);
     iterationNumber.setRange(10, 1000);
-    iterationNumber.setValue(100);
+    iterationNumber.setValue(200);
 
     QDoubleSpinBox cx = new QDoubleSpinBox();
     cx.setSingleStep(0.01);
@@ -114,7 +114,7 @@ class SidebarPanel extends QWidget {
     fractalType.currentIndexChanged.connect(
         (i) -> {
           if(i == 0){
-            manager.setRenderArea(new RenderArea(-0.75, 0.0, 2.5,2.5));
+            manager.setRenderArea(Calculator.DEFAULT_MANDELBROT_AREA);
             Calculator.setJuliaMode(false);
             cy.setVisible(false);
             cx.setVisible(false);
@@ -124,7 +124,7 @@ class SidebarPanel extends QWidget {
             nLabel.setVisible(false);
     
           }else{
-            manager.setRenderArea(new RenderArea(0.0, 0.0, 3.5,3.5));
+            manager.setRenderArea(Calculator.DEFAULT_JULIA_AREA);
             Calculator.setJuliaMode(true);
             cy.setVisible(true);
             cx.setVisible(true);

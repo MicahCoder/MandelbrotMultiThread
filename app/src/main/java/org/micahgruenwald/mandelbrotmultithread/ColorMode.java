@@ -34,11 +34,15 @@ public interface ColorMode {
         return (gray << 16) | (gray << 8) | gray;
     };
 
-    public record SimpleGradient(float r, float g, float b) implements ColorMode {
+    public record SimpleGradient(double r1, double g1, double b1, double r2, double g2, double b2) implements ColorMode {
 
         @Override
         public int calcColor(double lightness) {
-            return (((int) (r * lightness * 255) << 16) | ((int) (g * lightness * 255) << 8) | ((int) (b * lightness * 255)));
+            double p2 = 1.0 - lightness;
+            double r = r1 * lightness + r2*p2;
+            double g = g1 * lightness+ g2*p2;
+            double b = b1 * lightness + b2*p2;
+            return (((int) r << 16) | ((int) g << 8) | ((int) b));
         }
     }
 

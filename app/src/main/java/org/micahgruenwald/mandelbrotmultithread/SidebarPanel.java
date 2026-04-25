@@ -1,5 +1,6 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
+import io.qt.gui.QColor;
 import io.qt.gui.QPixmap;
 import io.qt.widgets.QComboBox;
 import io.qt.widgets.QDoubleSpinBox;
@@ -80,9 +81,38 @@ class SidebarPanel extends QWidget {
     colorChoices.addItem("Random Colors");
     colorChoices.addItem("Rainbow");
     colorChoices.addItem("Black and White");
-
+    colorChoices.addItem("Simple Gradient");
+    SelectColorButton color1 = new SelectColorButton(this, new QColor(0,0,160));
+    SelectColorButton color2 = new SelectColorButton(this, new QColor(160,160,160));
+    color1.hide();
+    color2.hide();
+    color1.clicked.connect(()->{
+       QColor color1Color = color1.getColor();
+            QColor color2Color = color2.getColor();
+            Calculator.setColorMode(new ColorMode.SimpleGradient(color1Color.red(),color1Color.green(),color1Color.blue(),color2Color.red(),color2Color.green(),color2Color.blue()));
+              manager.render();
+          QPixmap map = manager.getQPixmap();
+          imageView.setImage(map);
+    });
+    color2.clicked.connect(()->{
+       QColor color1Color = color1.getColor();
+            QColor color2Color = color2.getColor();
+            Calculator.setColorMode(new ColorMode.SimpleGradient(color1Color.red(),color1Color.green(),color1Color.blue(),color2Color.red(),color2Color.green(),color2Color.blue()));
+              manager.render();
+          QPixmap map = manager.getQPixmap();
+          imageView.setImage(map);
+    });
     colorChoices.currentIndexChanged.connect(
         (i) -> {
+          //Simple gradient
+          if(i==4){
+            QColor color1Color = color1.getColor();
+            QColor color2Color = color2.getColor();
+            color1.show();
+            color2.show();
+            Calculator.setColorMode(new ColorMode.SimpleGradient(color1Color.red(),color1Color.green(),color1Color.blue(),color2Color.red(),color2Color.green(),color2Color.blue()));
+          }else{
+
           ColorMode mode =
               switch (i) {
                 case 0 -> ColorMode.ORANGE_BLACK_BLUE;
@@ -91,7 +121,10 @@ class SidebarPanel extends QWidget {
                 case 3 -> ColorMode.BLACK_AND_WHITE;
                 default -> ColorMode.BLACK_AND_WHITE;
               };
+          color1.hide();
+          color2.hide();
           Calculator.setColorMode(mode);
+          }
           manager.render();
           QPixmap map = manager.getQPixmap();
           imageView.setImage(map);
@@ -141,13 +174,17 @@ class SidebarPanel extends QWidget {
     cxcyn.addWidget(cy);
     cxcyn.addWidget(n);
    
+    QHBoxLayout simpleGradient = new QHBoxLayout();
+    simpleGradient.setSpacing(25);
 
-
+    simpleGradient.addWidget(color1);
+    simpleGradient.addWidget(color2);
     zoomInButton.clicked.connect(imageView::zoomIn);
     zoomOutButton.clicked.connect(imageView::zoomOut);
     resetZoomButton.clicked.connect(imageView::resetZoom);
     sidebarLayout.addWidget(new QLabel("Color Choices"));
     sidebarLayout.addWidget(colorChoices);
+    sidebarLayout.addLayout(simpleGradient);
     sidebarLayout.addWidget(new QLabel("Fractal Type Choices"));
     sidebarLayout.addWidget(fractalType);
     sidebarLayout.addLayout(cxcynLabel); 

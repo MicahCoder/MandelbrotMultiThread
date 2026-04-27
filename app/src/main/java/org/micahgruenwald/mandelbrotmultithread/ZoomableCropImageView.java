@@ -17,7 +17,7 @@ class ZoomableCropImageView extends QWidget {
     private String errorText = "No image loaded";
     private double zoomFactor = 1.0;
     private QTimer timer;
-    private static final double ZOOM_STEP = 1.15;
+    private static final double ZOOM_STEP = 1.05;
     private static final double MAX_ZOOM = 20.0;
     private static final double DRAG_FACT = 0.01;
     private final Manager manager;

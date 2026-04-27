@@ -177,6 +177,8 @@ class SidebarPanel extends QWidget {
    
     QHBoxLayout simpleGradient = new QHBoxLayout();
     simpleGradient.setSpacing(25);
+    simpleGradient.addWidget(color1);
+    simpleGradient.addWidget(color2);
     QPushButton saveButton = new QPushButton("Save");
 
     SavePopup savePopup = new SavePopup(this, manager);

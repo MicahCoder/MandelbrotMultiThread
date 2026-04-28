@@ -24,7 +24,8 @@ public interface ColorMode {
     public static final ColorMode OCEAN = new ComplexGradient(new int[]{0x000034,0x184074,0x5498f8,0xFFFFFF,0x5498f8,0x184074,0x000000}, new float[]{0.0f,0.2f, 0.4f, 0.5f, 0.7f, 0.99f, 1.0f});
     public static final ColorMode POP = new ComplexGradient(new int[]{0xEA3524,0xFBE94E,0x51A02D,0x0201ED,0xDD30E3,0xF5BDCB,0xEC755A,0x75FBF1,0x72F54B,0xEA332E,0x000000}, new float[]{0.0f,0.1f,0.2f,0.3f,0.4f,0.5f,0.6f,0.7f,0.8f, 0.9f, 1.0f});
     public static final ColorMode RANDOM = new ColorMode() {
-        private final int randomOffset = new Random().nextInt();
+        //OG
+    private final int randomOffset = new Random().nextInt();
 
         public int calcColor(double lightness) {
             if (lightness == 1) {

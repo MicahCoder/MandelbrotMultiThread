@@ -1,38 +1,58 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
-import io.qt.core.Qt;
-import io.qt.gui.QPixmap;
-import io.qt.widgets.*;
-import io.qt.widgets.QApplication;
-import io.qt.widgets.QComboBox;
-import io.qt.widgets.QHBoxLayout;
-import io.qt.widgets.QPushButton;
-import io.qt.widgets.QSizePolicy;
-import io.qt.widgets.QVBoxLayout;
-import io.qt.widgets.QWidget;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import io.qt.core.Qt;
+import io.qt.widgets.QApplication;
+import io.qt.widgets.QHBoxLayout;
+import io.qt.widgets.QSizePolicy;
+import io.qt.widgets.QSplitter;
+import io.qt.widgets.QWidget;
+
 public class App {
+
+  public static final BufferedImage movingImage = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
+  public static final BufferedImage stationaryImage = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
   public static void main(String[] args) {
     QApplication.initialize(args);
+    try (InputStream in = App.class.getResourceAsStream("/styles/app.qss")) {
+      String style = null;
+      if (in != null) {
+        style = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+      } else {
+        Path p = Path.of("app/src/main/resources/styles/app.qss");
+        if (Files.exists(p)) {
+          style = Files.readString(p);
+        }
+      }
+      if (style != null && !style.isEmpty()) {
+        QApplication appInstance = QApplication.instance();
+        if (appInstance != null) {
+          appInstance.setStyleSheet(style);
+        }
+      }
+    } catch (Exception e) {
+      System.err.println("Could not load stylesheet: " + e.getMessage());
+    }
 
     QWidget window = new QWidget();
-    window.setWindowTitle("Test Window");
+    window.setWindowTitle("Mandelbrot Renderer");
     window.resize(900, 600);
 
     QHBoxLayout mainLayout = new QHBoxLayout(window);
-    BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
     Calculator.setColorMode(ColorMode.ORANGE_BLACK_BLUE);
     Calculator.setJuliaValues(-0.4, 0.6, 2);
     Calculator.setMaxIterations(200);
-    Calculator.setJuliaMode(true);
-    Manager manager = new Manager(8, new RenderArea(0, 0, 3.5, 3.5), image);
+    Calculator.setJuliaMode(false);
+    Manager manager = new Manager(6, Calculator.DEFAULT_MANDELBROT_AREA, stationaryImage);
 
     manager.render();
 
-    ZoomableCropImageView imageView = new ZoomableCropImageView();
+    ZoomableCropImageView imageView = new ZoomableCropImageView(manager);
     imageView.setImage(manager.getQPixmap());
     imageView.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
     imageView.setMinimumSize(1, 1);
@@ -58,28 +78,5 @@ public class App {
 
     QApplication.exec();
     QApplication.shutdown();
-  }
-
-  private static String findImagePath() {
-    Path cwd = Path.of("").toAbsolutePath().normalize();
-
-    Path[] candidates =
-        new Path[] {
-          cwd.resolve(
-              "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png"),
-          cwd.resolve(
-              "src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png"),
-          cwd.resolve(
-              "../app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png")
-        };
-
-    for (Path candidate : candidates) {
-      Path normalized = candidate.normalize();
-      if (Files.exists(normalized)) {
-        return normalized.toString();
-      }
-    }
-
-    return candidates[0].normalize().toString();
   }
 }

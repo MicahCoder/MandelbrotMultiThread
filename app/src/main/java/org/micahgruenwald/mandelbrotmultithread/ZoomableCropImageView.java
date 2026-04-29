@@ -1,6 +1,11 @@
 package org.micahgruenwald.mandelbrotmultithread;
 
+import io.qt.core.QPoint;
+import io.qt.core.QPointF;
+import io.qt.core.QTimer;
 import io.qt.core.Qt;
+import io.qt.gui.QCursor;
+import io.qt.gui.QKeyEvent;
 import io.qt.gui.QPaintEvent;
 import io.qt.gui.QPainter;
 import io.qt.gui.QPixmap;
@@ -11,11 +16,21 @@ class ZoomableCropImageView extends QWidget {
     private QPixmap image;
     private String errorText = "No image loaded";
     private double zoomFactor = 1.0;
-    private static final double ZOOM_STEP = 1.15;
+    private QTimer timer;
+    private static final double ZOOM_STEP = 1.05;
     private static final double MAX_ZOOM = 20.0;
+    private static final double DRAG_FACT = 0.01;
+    private final Manager manager;
+    private QPointF mousePressOffset = new QPointF();
 
-    ZoomableCropImageView() {
+
+    public ZoomableCropImageView(Manager manager) {
+      this.manager = manager;
       setFocusPolicy(Qt.FocusPolicy.StrongFocus);
+      timer = new QTimer();
+      timer.setInterval(100);
+      timer.setSingleShot(true);
+      timer.timeout.connect(()->renderWindow(false));
     }
 
     void setImage(QPixmap pixmap) {
@@ -32,15 +47,56 @@ class ZoomableCropImageView extends QWidget {
     }
 
     void zoomIn() {
-      setZoom(zoomFactor * ZOOM_STEP);
+      RenderArea area = manager.getRenderArea();
+      double xWidth = area.xWidth() * ZOOM_STEP;
+      double yWidth = area.yWidth() * ZOOM_STEP;
+      QPoint mousePose = mapFromGlobal(QCursor.pos());
+      Coordinate cartPose = mousePoseToCartesian(mousePose);
+      double x = cartPose.x() - (cartPose.x() - area.xCenter()) * ZOOM_STEP;
+      double y = cartPose.y() - (cartPose.y() - area.yCenter()) * ZOOM_STEP;
+      manager.setRenderArea(new RenderArea(x,y,xWidth,yWidth));
+      renderWindow(true);
+      setImage(manager.getQPixmap());
     }
 
     void zoomOut() {
-      setZoom(zoomFactor / ZOOM_STEP);
+      RenderArea area = manager.getRenderArea();
+      double xWidth = area.xWidth()/ ZOOM_STEP;
+      double yWidth = area.yWidth()/ZOOM_STEP;
+      QPoint mousePose = mapFromGlobal(QCursor.pos());
+      Coordinate cartPose = mousePoseToCartesian(mousePose);
+      double x = cartPose.x() - (cartPose.x() - area.xCenter()) / ZOOM_STEP;
+      double y = cartPose.y() - (cartPose.y() - area.yCenter()) / ZOOM_STEP;
+      manager.setRenderArea(new RenderArea(x,y,xWidth,yWidth));
+      renderWindow(true);
+      setImage(manager.getQPixmap());
+    }
+
+    void zoomInCenter() {
+      RenderArea area = manager.getRenderArea();
+      double xWidth = area.xWidth() * ZOOM_STEP;
+      double yWidth = area.yWidth() * ZOOM_STEP;
+      manager.setRenderArea(new RenderArea(area.xCenter(),area.yCenter(),xWidth,yWidth));
+      renderWindow(true);
+      setImage(manager.getQPixmap());
+    }
+
+    void zoomOutCenter() {
+      RenderArea area = manager.getRenderArea();
+      double xWidth = area.xWidth() / ZOOM_STEP;
+      double yWidth = area.yWidth() / ZOOM_STEP;
+      manager.setRenderArea(new RenderArea(area.xCenter(),area.yCenter(),xWidth,yWidth));
+      renderWindow(true);
+      setImage(manager.getQPixmap());
     }
 
     void resetZoom() {
-      setZoom(1.0);
+      if(Calculator.getJuliaMode()){
+        manager.setRenderArea(Calculator.DEFAULT_JULIA_AREA);
+      }else{
+        manager.setRenderArea(Calculator.DEFAULT_MANDELBROT_AREA);
+      }
+      renderWindow(false);
     }
 
     private void setZoom(double zoom) {
@@ -101,4 +157,97 @@ class ZoomableCropImageView extends QWidget {
 
       event.accept();
     }
+
+    @Override
+    protected void keyPressEvent(QKeyEvent event){
+      RenderArea area = manager.getRenderArea();
+      switch(event.key()){
+        case 0x01000013: //Up
+            area = new RenderArea(area.xCenter(), area.yCenter() - DRAG_FACT * area.yWidth(), area.xWidth(), area.yWidth());
+            manager.setRenderArea(area);
+            renderWindow(true);
+            break;
+        case 0x01000014://Right
+            area = new RenderArea(area.xCenter() + DRAG_FACT * area.xWidth(), area.yCenter(), area.xWidth(), area.yWidth());
+            manager.setRenderArea(area);
+            renderWindow(true);
+            break;
+        case 0x01000015: //Down
+            area = new RenderArea(area.xCenter() , area.yCenter()+ DRAG_FACT * area.yWidth(), area.xWidth(), area.yWidth());
+            manager.setRenderArea(area);
+            renderWindow(true);
+            break;
+        case 0x01000012: //Left
+            area = new RenderArea(area.xCenter() - DRAG_FACT * area.xWidth(), area.yCenter(), area.xWidth(), area.yWidth());
+            manager.setRenderArea(area);
+            renderWindow(true);
+            break;
+        default:
+          break;
+      }
+    }
+
+    //Not Working just yet.
+    // @Override
+    // protected void mousePressEvent(QMouseEvent event){
+    //   RenderArea area = manager.getRenderArea();
+    //   mousePressOffset = cartesianToMousePose(new Coordinate(area.xCenter(), area.yCenter())).minus(event.pos());
+    // }
+
+    // @Override
+    // protected void mouseMoveEvent(QMouseEvent event){
+    //   RenderArea area = manager.getRenderArea();
+    //   Coordinate newCenter = mousePoseToCartesian(event.position().plus(mousePressOffset));
+    //   RenderArea newArea = new RenderArea(newCenter.x(), newCenter.y(), area.xWidth(),area.yWidth());
+    //   manager.setRenderArea(newArea);
+    //   manager.render();
+    //   setImage(manager.getQPixmap());
+    // }
+
+    private Coordinate mousePoseToCartesian(QPoint mousePose){
+      RenderArea area = manager.getRenderArea();
+      double mx = (mousePose.x()/(double)width())*area.xWidth() +area.x0() ;
+      double my = (( mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
+      return new Coordinate(mx,my);
+    }
+    private Coordinate mousePoseToCartesian(QPointF mousePose){
+      RenderArea area = manager.getRenderArea();
+      double mx = (mousePose.x()/(double)width())*area.xWidth() +area.x0() ;
+      double my = (( mousePose.y()) / (double) height()) * area.yWidth() + area.y0();
+      return new Coordinate(mx,my);
+    }
+
+    private QPointF cartesianToMousePose(Coordinate cart){
+      RenderArea area = manager.getRenderArea();
+      double x = (cart.x() - area.x0()) * (double) width() / area.xWidth();  
+      double y = (cart.y() - area.y0()) * (double) height() / area.yWidth();  
+      return new QPointF(x,y);
+    }
+
+    private record Coordinate(double x, double y) {
+      public Coordinate minus(Coordinate other){
+        return new Coordinate(x() - other.x(), y() - other.y());
+      }
+      public Coordinate plus(Coordinate other){
+        return new Coordinate(x() + other.x(), y() + other.y());
+      }
+      public Coordinate times(double s){
+        return new Coordinate(x()*s, y()*s);
+      }
+
+
+    }
+
+  private void renderWindow(boolean moving){
+    if(moving){
+      timer.start();
+      manager.setImage(App.movingImage);
+    }else{
+      manager.setImage(App.stationaryImage);
+    }
+    manager.render();
+    setImage(manager.getQPixmap());
+  }
+
+
   }

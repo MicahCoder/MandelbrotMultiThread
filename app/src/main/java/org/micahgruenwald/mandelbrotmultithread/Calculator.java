@@ -8,7 +8,9 @@ public class Calculator {
   private static double cy = .156;
   private static double n = 2;
   private static int  R = escapeRadius(cx, cy, n);
-  public static boolean juliaMode = true;
+  private static boolean juliaMode = true;
+  public static final RenderArea DEFAULT_JULIA_AREA = new RenderArea(0.0,0.0,3.5,3.5);
+  public static final RenderArea DEFAULT_MANDELBROT_AREA = new RenderArea(-0.75,0.0,2.5,2.5);
 //new ColorMode.ComplexGradient(new int[]{new Color(1.0f, 0.0f, 0.0f).getRGB(),new Color(0.0f, 1.0f,0.0f).getRGB()}, new float[]{0.0f, 1.0f});
 public static double render(double x, double y){
   if(!juliaMode){
@@ -99,6 +101,10 @@ public static double mandelbrotValue(double x, double y) {
 
   public static void setJuliaMode(boolean state){
     Calculator.juliaMode = state;
+  }
+
+  public static boolean getJuliaMode(){
+    return Calculator.juliaMode;
   }
   
 }

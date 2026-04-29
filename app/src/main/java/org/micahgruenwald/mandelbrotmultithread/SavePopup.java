@@ -18,6 +18,11 @@ import io.qt.widgets.QWidget;
 
 public class SavePopup extends QDialog{
     private String filepath;
+    /**
+     * 
+     * @param parent the parent widget where this popup is saved
+     * @param manager the manager object this popup uses to render. 
+     */
     public SavePopup(QWidget parent, Manager manager) {
         super(parent);
         filepath = "";

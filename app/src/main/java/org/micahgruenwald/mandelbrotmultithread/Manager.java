@@ -78,8 +78,11 @@ public class Manager{
         double y1 = area.y1();
 
         int row = 0;
+        //Iterate across threads
         for(int i = 0; i<threadCount; i++){
+            //Find the amount of rows the thread is solving
             int length = rowLengths.get(i);
+            //find the ending y cordinate.
             y1 = y0 + (length)*dy;
             // System.out.println("Length: "+ length);
             // System.out.println("dx: "+ dx);
@@ -89,19 +92,24 @@ public class Manager{
             // System.out.println("y0 "+ y0);
             // System.out.println("y1 "+ y1);
             threads.add(new MandelbrotThread(x0, y0, x1, y1, row,0, row+length, image.getWidth(),image));
+            //Setup for next thread. 
             row += length;
             y0 = y1;
         }
+        //Run all of the threads, in paralell.
         for(Thread thread:threads){
             thread.start();
         }
+        //Wait for all the threads to finish rendering. 
         try{
+        
         for(Thread thread:threads){
             thread.join();
         }
         }catch(InterruptedException e){};
 
     }
+    //Converts bufferedImage to QPixmap(compattible with QT);
     public QPixmap getQPixmap() {
     // Initialize QPixmap with the correct dimensions
 

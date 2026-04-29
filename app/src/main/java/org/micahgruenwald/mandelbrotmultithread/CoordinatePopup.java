@@ -11,13 +11,18 @@ public class CoordinatePopup extends QDialog{
     private final QDoubleSpinBox yCenter;
     private final QDoubleSpinBox width;
     private final Manager manager;
-
+    
+    /*
+        This popup allows the user to pick an x,y coordinate and a render width to GO to a coordinate. 
+    */
     public CoordinatePopup(SidebarPanel parent, Manager manager) {
         super(parent);
         setWindowTitle("Enter Coordinates");
         this.manager = manager;
         QVBoxLayout layout = new QVBoxLayout(this);
         QPushButton set = new QPushButton("Set Coordinates");
+
+        //Create number selections
         xCenter = new QDoubleSpinBox();
         yCenter = new QDoubleSpinBox();
         width = new QDoubleSpinBox();
@@ -30,11 +35,16 @@ public class CoordinatePopup extends QDialog{
         width.setDecimals(9);
         width.setRange(0.0000001, 5);
 
+        //On close button
         set.clicked.connect(()->{
+            //Set a new Render Area
             manager.setRenderArea(new RenderArea(xCenter.value(), yCenter.value(), width.value(), width.value()));
+            //Render it
             parent.renderWindow(false);
             close();
         });
+
+        //Render widgets
         layout.addWidget(new QLabel("xCenter"));
         layout.addWidget(xCenter);
         layout.addWidget(new QLabel("yCenter"));
@@ -45,6 +55,7 @@ public class CoordinatePopup extends QDialog{
     }
     @Override
     public int exec(){
+        //Put in good default values
         RenderArea renderArea = manager.getRenderArea();
         xCenter.setValue(renderArea.xCenter());
         yCenter.setValue(renderArea.yCenter());

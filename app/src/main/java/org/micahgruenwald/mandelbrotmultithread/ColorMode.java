@@ -2,10 +2,12 @@ package org.micahgruenwald.mandelbrotmultithread;
 
 import java.awt.Color;
 import java.util.Random;
-
+//This interface defines a calculation for finding an int (RGB) color. 
 public interface ColorMode {
-
+    //Define the methods of the class
     public abstract int calcColor(double lightness);
+
+    //A few basic gradients
     public static final ColorMode GREEN_BLUE_BLACK = new ComplexGradient(new int[]{new Color(0, 0,0).getRGB(),new Color(200, 255,200).getRGB(),new Color(0, 0,255).getRGB(),new Color(200, 255,200).getRGB(),new Color(0, 0,0).getRGB()}, new float[]{0.0f,0.15f,0.5f,0.85f, 1.0f});
     public static final ColorMode ORANGE_BLACK_BLUE = new ComplexGradient(new int[]{new Color(0, 7, 100).getRGB(), new Color( 32, 107, 203).getRGB(), new Color(237, 255, 255).getRGB(), new Color(255, 170,   0).getRGB(), new Color(  0,   2,   0).getRGB(), new Color(  0,   2,   0).getRGB()}, new float[]{0.0f,0.16f,0.42f,0.6425f,0.8575f,1.0f});
     /*
@@ -23,9 +25,11 @@ public interface ColorMode {
     public static final ColorMode LAVA = new ComplexGradient(new int[]{0,0xBE3E1E,0xFEF963,0xFFFFFF,0xFEF963,0xBE3E1E,0}, new float[]{0.0f,0.2f, 0.4f, 0.5f, 0.7f, 0.99f, 1.0f});
     public static final ColorMode OCEAN = new ComplexGradient(new int[]{0x000034,0x184074,0x5498f8,0xFFFFFF,0x5498f8,0x184074,0x000000}, new float[]{0.0f,0.2f, 0.4f, 0.5f, 0.7f, 0.99f, 1.0f});
     public static final ColorMode POP = new ComplexGradient(new int[]{0xEA3524,0xFBE94E,0x51A02D,0x0201ED,0xDD30E3,0xF5BDCB,0xEC755A,0x75FBF1,0x72F54B,0xEA332E,0x000000}, new float[]{0.0f,0.1f,0.2f,0.3f,0.4f,0.5f,0.6f,0.7f,0.8f, 0.9f, 1.0f});
+   
+    //Og
+    //Defines the random clor mdoe. This uses random seeds to render different colors. 
     public static final ColorMode RANDOM = new ColorMode() {
-        //OG
-    private final int randomOffset = new Random().nextInt();
+        private final int randomOffset = new Random().nextInt();
 
         public int calcColor(double lightness) {
             if (lightness == 1) {
@@ -35,21 +39,21 @@ public interface ColorMode {
             return Color.HSBtoRGB(360 * random.nextFloat(), 1f, random.nextFloat());
         }
     };
-
+    //Uses HSV to render random colors
     public static final ColorMode HSV = (double lightness) -> Color.HSBtoRGB((float) lightness * 10, 1, .9f);
-
+    //Uses HSV to render random colors, if the value is 1, return black. 
     public static final ColorMode HSV_WITH_BLACK = (double lightness) -> {
         if (lightness == 1) {
             return 0;
         }
         return Color.HSBtoRGB((float) lightness * 10, 1, .9f);
     };
-
+    //Simple gradient between black and white. Optimized with bit shifting. 
     public static final ColorMode BLACK_AND_WHITE = (double lightness) -> {
         int gray = (int) (lightness * 255.0);
         return (gray << 16) | (gray << 8) | gray;
     };
-
+    //Creates a gradient between two colors. 
     public record SimpleGradient(double r1, double g1, double b1, double r2, double g2, double b2) implements ColorMode {
 
         @Override
@@ -61,7 +65,7 @@ public interface ColorMode {
             return (((int) r << 16) | ((int) g << 8) | ((int) b));
         }
     }
-
+    //Creates a gradient between an int[] of colors and a float[] of positions
     public record ComplexGradient(int[] colors, float[] positions) implements ColorMode {
 
         @Override
@@ -74,7 +78,7 @@ public interface ColorMode {
             }
             return out;
         }
-
+        
         private int gradient(Color start, Color end, float startX, float endX, float position) {
             float length = endX - startX;
             float startWeight = (position - startX) / length;

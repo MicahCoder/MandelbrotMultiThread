@@ -23,11 +23,11 @@ public class CoordinatePopup extends QDialog{
         width = new QDoubleSpinBox();
         
 
-        xCenter.setDecimals(7);
+        xCenter.setDecimals(9);
         xCenter.setRange(-2.5, 2.5);
-        yCenter.setDecimals(7);
+        yCenter.setDecimals(9);
         yCenter.setRange(-2.5, 2.5);
-        width.setDecimals(7);
+        width.setDecimals(9);
         width.setRange(0.0000001, 5);
 
         set.clicked.connect(()->{

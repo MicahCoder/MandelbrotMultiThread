@@ -23,7 +23,10 @@ class ZoomableCropImageView extends QWidget {
     private final Manager manager;
     private QPointF mousePressOffset = new QPointF();
 
-
+    /**
+     * 
+     * @param manager the manager for rendering. 
+     */
     public ZoomableCropImageView(Manager manager) {
       this.manager = manager;
       setFocusPolicy(Qt.FocusPolicy.StrongFocus);

@@ -14,6 +14,11 @@ import io.qt.widgets.QWidget;
 class SidebarPanel extends QWidget {
   private Manager manager;
   private ZoomableCropImageView imageView;
+  /**
+   * 
+   * @param imageView The zoom bar
+   * @param manager the manager for rendering
+   */
   SidebarPanel(ZoomableCropImageView imageView, Manager manager) {
     this.manager = manager;
     this.imageView = imageView;
@@ -114,6 +119,7 @@ class SidebarPanel extends QWidget {
           QPixmap map = manager.getQPixmap();
           imageView.setImage(map);
     });
+    //Color choices logic, based off of the spinbox for color
     colorChoices.currentIndexChanged.connect(
         (i) -> {
           //Simple gradient
@@ -209,18 +215,9 @@ class SidebarPanel extends QWidget {
     resetZoomButton.clicked.connect(imageView::resetZoom);
     saveButton.clicked.connect(savePopup::exec);
     setCordsButton.clicked.connect(setCordsPopup::exec);
-    // saveButton.clicked.connect(()->{
-    //   try {
-    //   File outputfile =
-    //       new File(
-    //           "app/src/test/java/org/micahgruenwald/mandelbrotmultithread/testOutput/saved.png");
-    //   ImageIO.write(manager.getImage(), "png", outputfile);
-    // } catch (IOException e) {
-    // }
-    // });
 
 
-
+    //Build widgets. 
     sidebarLayout.addWidget(new QLabel("Color Choices"));
     sidebarLayout.addWidget(colorChoices);
     sidebarLayout.addLayout(simpleGradient);
@@ -237,7 +234,10 @@ class SidebarPanel extends QWidget {
     setLayout(sidebarLayout);
     setMinimumWidth(160);
   }
-
+  /**
+   * renders the window
+   * @param moving whether to render at a low res(moving true) or a high res(false)
+   */
   protected void renderWindow(boolean moving){
     manager.setImage(moving?App.movingImage:App.stationaryImage);
     manager.render();

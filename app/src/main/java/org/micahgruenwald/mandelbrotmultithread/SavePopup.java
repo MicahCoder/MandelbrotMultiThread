@@ -40,8 +40,9 @@ public class SavePopup extends QDialog{
         QFileIconProvider iconProvider = new QFileIconProvider();
         fileButton.setIcon(iconProvider.icon(QFileIconProvider.IconType.File));
         fileButton.clicked.connect(()->{
-            setFilepath(QFileDialog.getExistingDirectory(this, tr("Select Directory"),"")); });
+            setFilepath(QFileDialog.getExistingDirectory(this, tr("Select Directory"),"")); });//Directory save. 
         closeButton.clicked.connect(()->{
+            //Parse data from buttons and save the file. 
             int res = Integer.parseInt(resolution.text());
             BufferedImage image =  new BufferedImage(res,res, BufferedImage.TYPE_INT_RGB);
             Manager highResManager = new Manager(7, manager.getRenderArea(), image);

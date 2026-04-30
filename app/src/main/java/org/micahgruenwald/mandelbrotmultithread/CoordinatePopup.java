@@ -12,9 +12,11 @@ public class CoordinatePopup extends QDialog{
     private final QDoubleSpinBox width;
     private final Manager manager;
     
-    /*
-        This popup allows the user to pick an x,y coordinate and a render width to GO to a coordinate. 
-    */
+    /**
+     * This popup allows the user to pick an x,y coordinate and a render width to GO to a coordinate. 
+     * @param parent the panel where the popup is stored
+     * @param manager the rendering object
+     */
     public CoordinatePopup(SidebarPanel parent, Manager manager) {
         super(parent);
         setWindowTitle("Enter Coordinates");

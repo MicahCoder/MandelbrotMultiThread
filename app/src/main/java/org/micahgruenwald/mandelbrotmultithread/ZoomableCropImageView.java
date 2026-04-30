@@ -24,7 +24,7 @@ class ZoomableCropImageView extends QWidget {
     private QPointF mousePressOffset = new QPointF();
 
     /**
-     * 
+     * This makes a window where you can zoom in on a render
      * @param manager the manager for rendering. 
      */
     public ZoomableCropImageView(Manager manager) {

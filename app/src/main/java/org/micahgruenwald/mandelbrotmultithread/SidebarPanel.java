@@ -14,6 +14,8 @@ import io.qt.widgets.QWidget;
 class SidebarPanel extends QWidget {
   private Manager manager;
   private ZoomableCropImageView imageView;
+
+  // Constructs everything about the sidear panel. Most of the class is really just this.
   /**
    * This panel stores all the settings for the renderer
    * @param imageView The zoom bar
@@ -215,7 +217,7 @@ class SidebarPanel extends QWidget {
     setCordsButton.clicked.connect(setCordsPopup::exec);
 
 
-    //Build widgets. 
+    // Add all of the constructed widgets to the layout
     sidebarLayout.addWidget(new QLabel("Color Choices"));
     sidebarLayout.addWidget(colorChoices);
     sidebarLayout.addLayout(simpleGradient);

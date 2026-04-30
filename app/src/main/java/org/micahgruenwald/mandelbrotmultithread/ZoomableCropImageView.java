@@ -14,6 +14,7 @@ import io.qt.gui.QPixmap;
 import io.qt.gui.QWheelEvent;
 import io.qt.widgets.QWidget;
 
+// This class is a custom widget that displays the fractal and allows zooming and panning.
 class ZoomableCropImageView extends QWidget {
     private QPixmap image;
     private String errorText = "No image loaded";
@@ -47,12 +48,14 @@ class ZoomableCropImageView extends QWidget {
       update();
     }
 
+    // Fallback for when we can't find/show an image.
     void setErrorText(String text) {
       image = null;
       errorText = text;
       update();
     }
 
+    // Zoom logic.
     void zoomIn() {
       RenderArea area = manager.getRenderArea();
       double xWidth = area.xWidth() * ZOOM_STEP;
@@ -111,6 +114,7 @@ class ZoomableCropImageView extends QWidget {
       update();
     }
 
+    // Called when the widget needs to be redrawn (after the manager renders a new image or when zooming/panning)
     @Override
     protected void paintEvent(QPaintEvent event) {
       super.paintEvent(event);
@@ -159,6 +163,7 @@ class ZoomableCropImageView extends QWidget {
       }
     }
 
+    // Zoom on scroll by capturing wheel events
     @Override
     protected void wheelEvent(QWheelEvent event) {
       if (event.angleDelta().y() > 0) {
@@ -173,6 +178,7 @@ class ZoomableCropImageView extends QWidget {
       event.accept();
     }
 
+    // Pan around with arrow keys
     @Override
     protected void keyPressEvent(QKeyEvent event){
       RenderArea area = manager.getRenderArea();

@@ -65,7 +65,10 @@ public class SavePopup extends QDialog{
         layout.addWidget(closeButton);
 
     }
-
+    /**
+     * Sets the file path of the save to path
+     * @param path
+     */
     private void setFilepath(String path){
         this.filepath = path;
     }

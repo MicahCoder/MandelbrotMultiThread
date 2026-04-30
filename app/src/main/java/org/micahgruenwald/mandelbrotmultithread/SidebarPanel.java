@@ -15,7 +15,7 @@ class SidebarPanel extends QWidget {
   private Manager manager;
   private ZoomableCropImageView imageView;
   /**
-   * 
+   * This panel stores all the settings for the renderer
    * @param imageView The zoom bar
    * @param manager the manager for rendering
    */

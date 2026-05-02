@@ -32,7 +32,7 @@ public interface ColorMode {
             new Color(0, 2, 0).getRGB()
           },
           new float[] {0.0f, 0.16f, 0.42f, 0.6425f, 0.8575f, 1.0f});
-  /**
+  /*
   The following few gradients (going up to Random), were heavily inspired by:
   @link{https://matplotlib.org/stable/_images/sphx_glr_colormap_reference_001_2_00x.png}
   */
@@ -77,6 +77,7 @@ public interface ColorMode {
 
   // Og
   // Defines the random clor mdoe. This uses random seeds to render different colors.
+    /**@author mgruenwald*/
   public static final ColorMode RANDOM =
       new ColorMode() {
         private final int randomOffset = new Random().nextInt();
@@ -91,9 +92,11 @@ public interface ColorMode {
         }
       };
   // Uses HSV to render random colors
+    /**@author mgruenwald*/
   public static final ColorMode HSV =
       (double lightness) -> Color.HSBtoRGB((float) lightness * 10, 1, .9f);
   // Uses HSV to render random colors, if the value is 1, return black.
+    /**@author mgruenwald*/
   public static final ColorMode HSV_WITH_BLACK =
       (double lightness) -> {
         if (lightness == 1) {
@@ -102,6 +105,7 @@ public interface ColorMode {
         return Color.HSBtoRGB((float) lightness * 10, 1, .9f);
       };
   // Simple gradient between black and white. Optimized with bit shifting.
+    /**@author mgruenwald*/
   public static final ColorMode BLACK_AND_WHITE =
       (double lightness) -> {
         int gray = (int) (lightness * 255.0);
@@ -109,6 +113,7 @@ public interface ColorMode {
       };
 
   // Creates a gradient between two colors.
+    /**@author mgruenwald*/
   public record SimpleGradient(double r1, double g1, double b1, double r2, double g2, double b2)
       implements ColorMode {
 
@@ -123,6 +128,7 @@ public interface ColorMode {
   }
 
   // Creates a gradient between an int[] of colors and a float[] of positions
+  /**@author mgruenwald*/
   public record ComplexGradient(int[] colors, float[] positions) implements ColorMode {
 
     @Override
@@ -141,7 +147,7 @@ public interface ColorMode {
       }
       return out;
     }
-
+    /**@author mgruenwald*/
     private int gradient(Color start, Color end, float startX, float endX, float position) {
       float length = endX - startX;
       float startWeight = (position - startX) / length;

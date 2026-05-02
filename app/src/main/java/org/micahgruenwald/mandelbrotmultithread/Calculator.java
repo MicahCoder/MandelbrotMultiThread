@@ -43,7 +43,7 @@ public class Calculator {
 
   // Finds the value of the mandelbrot set at (x,y)
       /**
-   * @author mgruenwald
+   * @author mgruenwald, psuedocode found at @link{https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings}
    * @param x x cord
    * @param y y cord
    */
@@ -67,7 +67,7 @@ public class Calculator {
 
   // Finds the value of the julia set at (x,y)
       /**
-   * @author mgruenwald
+   * @author mgruenwald, psuedocode found @link{https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_multi-Julia_sets}
    * @param x x cord
    * @param y y cord
    */
@@ -104,7 +104,7 @@ public class Calculator {
 
   // Finds the value of the julia set at (x,y) (order 2)
   /**
-   * @author mgruenwald
+   * @author mgruenwald, psuedocode found @link{https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_normal_Julia_sets}
    * @param x
    * @param y
    */

@@ -8,7 +8,8 @@ public interface ColorMode {
   // Define the methods of the class
   public abstract int calcColor(double lightness);
 
-  // A few basic gradients
+  // A few basic gradients 
+  /**@author mgruenwald*/
   public static final ColorMode GREEN_BLUE_BLACK =
       new ComplexGradient(
           new int[] {
@@ -19,6 +20,7 @@ public interface ColorMode {
             new Color(0, 0, 0).getRGB()
           },
           new float[] {0.0f, 0.15f, 0.5f, 0.85f, 1.0f});
+  /**@author mgruenwald*/
   public static final ColorMode ORANGE_BLACK_BLUE =
       new ComplexGradient(
           new int[] {
@@ -30,7 +32,7 @@ public interface ColorMode {
             new Color(0, 2, 0).getRGB()
           },
           new float[] {0.0f, 0.16f, 0.42f, 0.6425f, 0.8575f, 1.0f});
-  /*
+  /**
   The following few gradients (going up to Random), were heavily inspired by:
   @link{https://matplotlib.org/stable/_images/sphx_glr_colormap_reference_001_2_00x.png}
   */

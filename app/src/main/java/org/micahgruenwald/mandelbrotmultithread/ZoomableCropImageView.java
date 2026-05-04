@@ -4,12 +4,12 @@ import io.qt.core.QPoint;
 import io.qt.core.QPointF;
 import io.qt.core.QTimer;
 import io.qt.core.Qt;
+import io.qt.gui.QColor;
 import io.qt.gui.QCursor;
-import io.qt.gui.QPainterPath;
 import io.qt.gui.QKeyEvent;
 import io.qt.gui.QPaintEvent;
 import io.qt.gui.QPainter;
-import io.qt.gui.QColor;
+import io.qt.gui.QPainterPath;
 import io.qt.gui.QPixmap;
 import io.qt.gui.QWheelEvent;
 import io.qt.widgets.QWidget;
@@ -22,7 +22,8 @@ class ZoomableCropImageView extends QWidget {
     private QTimer timer;
   private static final int CORNER_RADIUS = 18;
     private static final double ZOOM_STEP = 1.05;
-    private static final double MAX_ZOOM = 20.0;
+    private static final double MAX_ZOOM_OUT= 20.0;
+    private static final double MAX_ZOOM_IN = 5e-12;
     private static final double DRAG_FACT = 0.01;
     private final Manager manager;
     private QPointF mousePressOffset = new QPointF();
@@ -60,6 +61,9 @@ class ZoomableCropImageView extends QWidget {
       RenderArea area = manager.getRenderArea();
       double xWidth = area.xWidth() * ZOOM_STEP;
       double yWidth = area.yWidth() * ZOOM_STEP;
+      if(xWidth > MAX_ZOOM_OUT){
+        return;
+      }
       QPoint mousePose = mapFromGlobal(QCursor.pos());
       Coordinate cartPose = mousePoseToCartesian(mousePose);
       double x = cartPose.x() - (cartPose.x() - area.xCenter()) * ZOOM_STEP;
@@ -73,6 +77,9 @@ class ZoomableCropImageView extends QWidget {
       RenderArea area = manager.getRenderArea();
       double xWidth = area.xWidth()/ ZOOM_STEP;
       double yWidth = area.yWidth()/ZOOM_STEP;
+            if(xWidth < MAX_ZOOM_IN){
+        return;
+      }
       QPoint mousePose = mapFromGlobal(QCursor.pos());
       Coordinate cartPose = mousePoseToCartesian(mousePose);
       double x = cartPose.x() - (cartPose.x() - area.xCenter()) / ZOOM_STEP;
@@ -110,7 +117,7 @@ class ZoomableCropImageView extends QWidget {
     }
 
     private void setZoom(double zoom) {
-      zoomFactor = Math.max(1.0, Math.min(zoom, MAX_ZOOM));
+      zoomFactor = Math.max(1.0, Math.min(zoom, MAX_ZOOM_OUT));
       update();
     }
 

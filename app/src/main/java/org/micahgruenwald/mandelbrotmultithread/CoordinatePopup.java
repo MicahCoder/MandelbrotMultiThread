@@ -35,7 +35,7 @@ public class CoordinatePopup extends QDialog {
     yCenter.setDecimals(9);
     yCenter.setRange(-2.5, 2.5);
     width.setDecimals(9);
-    width.setRange(0.0000001, 5);
+    width.setRange(1e-9, 5);
 
     // On close button
     set.clicked.connect(
